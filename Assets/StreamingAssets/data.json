@@ -1,0 +1,27 @@
+{
+    "characterCustomization": {
+        
+        "parts":[
+            {
+                "name":"heads",
+                "pos":{
+                    "y": 0
+                }
+            },
+            {
+                "name":"eyes",
+                "pos":{
+                    "y": 7
+                },
+                "scale": 0.6
+            },
+            {
+                "name":"mouths",
+                "pos":{
+                    "y": -10
+                },
+                "scale": 0.6
+            }
+        ]
+    }
+}
