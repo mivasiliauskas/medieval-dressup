@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 {
     private string gameDataFileName = "data.json";
 
+    private List<Sprite> allSprites;
     public static GameData gameData;
 
     public GameObject selectionButtons;
@@ -19,6 +20,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        allSprites = Resources.LoadAll("Sprites/Character", typeof(Sprite)).OfType<Sprite>().ToList();
         LoadGameData();
         var characterPlaceholder = GameObject.Find("CharacterPlaceholder");
         var menu = GameObject.Find("Menu");
@@ -66,8 +68,6 @@ public class GameManager : MonoBehaviour
 
     void UpdatePartImage(Part part, int modifier)
     {
-        Debug.Log( part.sprites.Count);
-
         var partImage = part.instance.GetComponent<Image>();
         var sprite = partImage.sprite;
         var spriteIndex = part.sprites.IndexOf(sprite) + modifier;
@@ -79,7 +79,6 @@ public class GameManager : MonoBehaviour
         {
             spriteIndex = 0;
         }
-        Debug.Log( spriteIndex);
 
         partImage.sprite = part.sprites[spriteIndex];
     }
@@ -87,9 +86,7 @@ public class GameManager : MonoBehaviour
     void LoadCharacterCustomizationPart(Part part, GameObject parent)
     {
         // Load sprites by name as pattern
-        var files = Directory.GetFiles("Assets/Resources/Sprites/Character", $"{part.name}_*.png");
-        part.sprites = files.Select(file => Resources.Load<Sprite>("Sprites/Character/" + Path.GetFileNameWithoutExtension(file))).ToList();
-
+        part.sprites = allSprites.Where(x => x.texture.name.StartsWith(part.name)).ToList();
         // Instantiate image
         var newImage = Instantiate(image, parent.transform.position, Quaternion.identity);
         part.instance = newImage;
