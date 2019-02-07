@@ -11,6 +11,7 @@ public class GameData
 [Serializable]
 public class Part
 {
+    public string title;
     public string name;
     public Position pos;
     public List<Sprite> sprites;

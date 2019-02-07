@@ -3,12 +3,14 @@
         
         "parts":[
             {
+                "title": "Head",
                 "name":"heads",
                 "pos":{
                     "y": 0
                 }
             },
             {
+                "title": "Eyes",
                 "name":"eyes",
                 "pos":{
                     "y": 7
@@ -16,9 +18,10 @@
                 "scale": 0.6
             },
             {
+                "title": "Mouth",
                 "name":"mouths",
                 "pos":{
-                    "y": -10
+                    "y": -12
                 },
                 "scale": 0.6
             }

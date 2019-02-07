@@ -12,16 +12,21 @@ public class GameManager : MonoBehaviour
 
     public static GameData gameData;
 
+    public GameObject selectionButtons;
     public GameObject image;
+
 
     // Start is called before the first frame update
     void Start()
     {
         LoadGameData();
-        var canvas = GameObject.Find("Canvas");
+        var characterPlaceholder = GameObject.Find("CharacterPlaceholder");
+        var menu = GameObject.Find("Menu");
+        var target = GameObject.Find("CharacterPlaceholder");
         gameData.characterCustomization.parts.ForEach(part =>
         {
-            LoadCharacterCustomizationPart(canvas, part);
+            LoadCharacterCustomizationPart(part, characterPlaceholder);
+            RegisterCharacterCustomizationButton(part, menu);
         });
         Randomize();
     }
@@ -37,7 +42,49 @@ public class GameManager : MonoBehaviour
         });
     }
 
-    void LoadCharacterCustomizationPart(GameObject parent, Part part)
+    void RegisterCharacterCustomizationButton(Part part, GameObject parent)
+    {
+        var group = Instantiate(selectionButtons, parent.transform.position, Quaternion.identity);
+        group.transform.SetParent(parent.transform);
+        group.transform.localScale = new Vector3(1, 1, 1);
+
+        var parts = gameData.characterCustomization.parts;
+        var index = parts.IndexOf(part);
+        group.transform.localPosition = new Vector3(40, -40 + index * -15, 0);
+
+        // Set title
+        var titleObject = group.transform.Find("Title");
+        titleObject.GetComponent<Text>().text = part.title;
+
+
+        // Set button listeners
+        group.transform.Find("ButtonPrevious").GetComponent<Button>().onClick
+        .AddListener(delegate { UpdatePartImage(part, -1); });
+        group.transform.Find("ButtonNext").GetComponent<Button>().onClick
+        .AddListener(delegate { UpdatePartImage(part, +1); });
+    }
+
+    void UpdatePartImage(Part part, int modifier)
+    {
+        Debug.Log( part.sprites.Count);
+
+        var partImage = part.instance.GetComponent<Image>();
+        var sprite = partImage.sprite;
+        var spriteIndex = part.sprites.IndexOf(sprite) + modifier;
+        if (spriteIndex < 0)
+        {
+            spriteIndex = part.sprites.Count - 1;
+        }
+        else if (spriteIndex == part.sprites.Count)
+        {
+            spriteIndex = 0;
+        }
+        Debug.Log( spriteIndex);
+
+        partImage.sprite = part.sprites[spriteIndex];
+    }
+
+    void LoadCharacterCustomizationPart(Part part, GameObject parent)
     {
         // Load sprites by name as pattern
         var files = Directory.GetFiles("Assets/Resources/Sprites/Character", $"{part.name}_*.png");
